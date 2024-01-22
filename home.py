@@ -37,7 +37,8 @@ st.markdown("#### v0.1 du prompt")
 st.markdown("Modifications attendues : moins de notions non données dans le cours, meilleures corrections")
 
 with st.expander("Contenu des annales", expanded=False):
-    annale = st.text_area("Annales", placeholder="Une série de 6 à 10 QCMs d'annales")
+    sujet = st.text_area("Sujet", placeholder="Une série de sujets 6 à 10 QCMs")
+    correction = st.text_area("Correction", placeholder="La correction de ces sujets")
 
 col1, col2, col3 = st.columns(3)
 submit = col3.button("Rédiger ✍🏻", use_container_width=1)
@@ -52,7 +53,7 @@ if submit:
         ts_start = perf_counter()
 
         if st.session_state["error"] == 0:
-            final_text = writer(annale)
+            final_text = writer(sujet, correction)
             st.write(final_text)    
         
         ts_end = perf_counter()

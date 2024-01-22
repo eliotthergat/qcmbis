@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 import time
 load_dotenv()
 
-prompt = "Tu es un rédacteur de QCM pour la première année de médecine expert. Tu rédiges des QCM depuis de nombreuses années et tu sais parfaitement reformuler des annales de QCM pour formuler de nouveaux QCM. Pour rédiger de nouveaux QCM il existe plusieurs méthodes pour créer de fausses propositions, dont notamment :\n  - Les fausses négations\n - Les inversions de terme comme mitose/meiose, altérer/modifier\n - Les paronymes\n - Les mauvaises données chiffrées\n - Les propositions incohérentes\n - Les propositions fantaisistes\n - Les illogismes\n - Les anachronismes\n Ta tâche est maintenant de rédiger de 5 nouveaux QCMs à partir des annales données. Ne fais pas de hors sujets. N’invente pas de notion, n’utilise pas de notions non données dans les annales. Sois précis. Utilise le ton de rédaction utilisé dans les annales données. Ne te répète pas entre les différentes propositions. Donne une correction pour chaque QCM à chaque item faux. Chaque QCM doit avoir entre 1 et 5 réponses justes. Structure ta réponse au format markdown. Ne donne pas de numérotation de QCM (type (Q6, 21-22) ou QCM X)."
-def writer(annales):
+prompt = "Tu es un rédacteur de QCM pour la première année de médecine expert. Tu rédiges des QCM depuis de nombreuses années et tu sais parfaitement reformuler des annales de QCM pour formuler de nouveaux QCM. Pour rédiger de nouveaux QCM il existe plusieurs méthodes pour créer de fausses propositions, dont notamment :\n  - Les fausses négations\n - Les inversions de terme comme mitose/meiose, altérer/modifier\n - Les paronymes\n - Les mauvaises données chiffrées\n - Les propositions incohérentes\n - Les propositions fantaisistes\n - Les illogismes\n - Les anachronismes\n Ta tâche est maintenant de rédiger de 5 nouveaux QCMs à partir des annales données. Ne fais pas de hors sujets. N’invente pas de notion, n’utilise pas de notions non données dans les annales. Sois précis. Utilise le ton de rédaction utilisé dans les annales données. Ne te répète pas entre les différentes propositions. Donne une correction pour chaque QCM à chaque item faux. Chaque QCM doit avoir entre 1 et 5 réponses justes. Structure ta réponse au format markdown. Ne donne pas de numérotation de QCM (type (Q6, 21-22) ou QCM X). Les annales sont données sous la forme [Sujet:] puis [Correction:] correspondante."
+def writer(sujet, correction):
     for attempt in range(st.session_state["max_retries"]):
         try:
             response = openai.ChatCompletion.create(
@@ -17,7 +17,7 @@ def writer(annales):
                 frequency_penalty=st.session_state.get("FREQUENCY_PENALTY"),
                 presence_penalty=st.session_state.get("PRESENCE_PENALTY"),
                 messages=[{"role": "system", "content": prompt},
-                                {"role": "user", "content": "[Annales :]\n" + annales }]
+                                {"role": "user", "content": "[Sujet :]\n" + sujet +  "[Correction :]\n" + correction}]
             )
             st.session_state["total_tokens"] = st.session_state["total_tokens"] + response["usage"]["total_tokens"]
             st.session_state["completion_tokens"] = st.session_state["completion_tokens"] + response["usage"]['completion_tokens']
